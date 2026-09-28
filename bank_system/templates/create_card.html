@@ -90,7 +90,8 @@
                 <a href="{% url 'transfer' %}">Transfer</a>
                 <a href="{% url 'transactions' %}">Transactions</a>
                 <a href="{% url 'acc_detail' user.pk %}">Account</a>
-                <a href="{% url 'logout' %}">Log out</a>
+                <form method="post" action="{% url 'logout' %}" class="logout-form">{% csrf_token %}<button type="submit">Log out</button></form>
+            
             </nav>
         </div>
     </header>
