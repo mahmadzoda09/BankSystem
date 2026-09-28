@@ -90,12 +90,10 @@ class TransferView(FormView):
         source = form.cleaned_data['source']
         destination = form.cleaned_data['destination']
         amount = form.cleaned_data['amount']
-
-
+        
         if amount <= 0:
             form.add_error('amount', 'Amount must be greater than 0')
             return self.form_invalid(form)
-
         account = None
         card = None
 
@@ -106,7 +104,6 @@ class TransferView(FormView):
             if account.user != self.request.user:
                 form.add_error('source', 'This is not your account')
                 return self.form_invalid(form)
-            
             if account.balance < amount:
                 form.add_error('amount', 'Not enough money')
                 return self.form_invalid(form)
@@ -155,15 +152,13 @@ class TransferView(FormView):
             account.save()
             destination_card.save()
             Transaction.objects.create(source_account=account,destination_card=destination_card,amount=amount)
-
-
+            
         elif card and destination_account:
             card.balance -= amount
             destination_account.balance += amount
             card.save()
             destination_account.save()
             Transaction.objects.create(source_card=card,destination_account=destination_account,amount=amount)
-
 
         elif card and destination_card:
             card.balance -= amount
@@ -189,14 +184,11 @@ class TransactionList(ListView):
         cards = Card.objects.filter(owner=account)
 
         transactions = []
-
         filter_type = self.request.GET.get('type')
-
         
         if filter_type == 'all' or filter_type is None:
-
             account_sent = Transaction.objects.filter(source_account=account)
-
+            
             for transaction in account_sent:
                 transactions.append(transaction)
 
@@ -264,18 +256,8 @@ class CheckCardView(FormView):
 
     def form_valid(self, form):
         card_number = form.cleaned_data['card_number']
-
         if Card.objects.filter(card_number=card_number).exists():
             card = Card.objects.get(card_number=card_number)
             account = card.owner
-
-            return render(self.request, self.template_name, {
-                'form': form,
-                'firstname': account.firstname,
-                'lastname': account.lastname
-            })
-
-        return render(self.request, self.template_name, {
-            'form': form,
-            'error': 'Card not found'
-        })
+            return render(self.request, self.template_name, { 'form': form, 'firstname': account.firstname, 'lastname': account.lastname })
+        return render(self.request, self.template_name, { 'form': form, 'error': 'Card not found' })

@@ -8,7 +8,7 @@ import random
 class User(AbstractUser):
     username = None
     phone = models.CharField(max_length=50,unique=True)
-
+    
     USERNAME_FIELD = 'phone'
     REQUIRED_FIELDS = []
 

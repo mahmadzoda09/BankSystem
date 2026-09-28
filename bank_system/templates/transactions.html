@@ -81,6 +81,25 @@
             td[data-label]::before { content: attr(data-label) ": "; color: var(--muted); font-size: .85rem; }
             td.num { text-align: left; font-size: 1.15rem; }
         }
+        .logout-form {
+    display: inline;
+    margin: 0;
+}
+
+.logout-form button {
+    color: #d5e0ec; text-decoration: none; padding: .5rem .8rem; border-radius: 6px; font: inherit; font-size: .95rem;
+            background: none; border: 0; cursor: pointer;
+}
+
+.logout-form button:hover {
+    background: var(--navy-2);
+    color: #fff;
+}
+
+.logout-form button:focus-visible {
+    outline: 3px solid #7fb8ff;
+    outline-offset: 2px;
+}
     </style>
 </head>
 <body>

@@ -106,7 +106,7 @@
                     </div>
                 </div>
                 <p class="balance-label">Account balance</p>
-                <p class="balance">{{ account.balance }}</p>
+                <p class="balance">{{ account.balance }} TJS</p>
             </section>
 
             <section class="panel">
@@ -131,6 +131,9 @@
                     <a class="tile" href="{% url 'cards' %}"><strong>My cards</strong><span>View and manage your cards.</span></a>
                     <a class="tile" href="{% url 'transfer' %}"><strong>Transfer</strong><span>Send money to another customer.</span></a>
                     <a class="tile" href="{% url 'transactions' %}"><strong>Transactions</strong><span>See your full history.</span></a>
+                    <a class="tile" href="{% url 'check_phone' %}"><strong>Check Phone</strong><span>Check with phone number.</span></a>
+                    <a class="tile" href="{% url 'check_card' %}"><strong>Check Card</strong><span>Check with card number.</span></a>
+
                 </div>
             </section>
         </div>

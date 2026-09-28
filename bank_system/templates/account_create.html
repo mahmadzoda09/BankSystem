@@ -88,6 +88,13 @@
             border-radius: 6px;
             font-size: .95rem;
         }
+        form{
+            color: #d5e0ec;
+            text-decoration: none;
+            padding: .5rem .8rem;
+            border-radius: 6px;
+            font-size: .95rem;
+        }
 
         .nav a:hover {
             background: var(--navy-2);
@@ -250,7 +257,7 @@
             <a href="{% url 'transfer' %}">Transfer</a>
             <a href="{% url 'transactions' %}">Transactions</a>
             <a href="{% url 'acc_detail' user.pk %}">Account</a>
-            <form method="post" action="{% url 'logout' %}">
+            <form method="post" class="form" action="{% url 'logout' %}">
     {% csrf_token %}
     <button type="submit">Logout</button>
 </form>

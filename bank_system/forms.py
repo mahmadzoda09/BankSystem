@@ -30,4 +30,4 @@ class CheckPhoneForm(forms.Form):
     phone = forms.CharField()
 
 class CheckCardForm(forms.Form):
-    phone = forms.CharField()
+    card_number = forms.CharField()
