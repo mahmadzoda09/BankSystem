@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create account | Bank</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --navy: #0f2a43;
+            --navy-2: #1a3d5f;
+            --ink: #1b2733;
+            --muted: #5c6b7a;
+            --line: #dde3ea;
+            --bg: #f4f6f9;
+            --accent: #0e7c66;
+            --accent-dark: #0a5f4e;
+            --danger: #b3261e;
+            --danger-bg: #fdecea;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            line-height: 1.55;
+            font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            font-variant-numeric: tabular-nums;
+        }
+
+        :focus-visible {
+            outline: 3px solid #7fb8ff;
+            outline-offset: 2px;
+        }
+
+        .topbar {
+            background: var(--navy);
+        }
+
+        .topbar-inner {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 0 1.25rem;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+
+        .brand-mark {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            background: var(--accent);
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+        }
+
+        .nav {
+            display: flex;
+            gap: .25rem;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            color: #d5e0ec;
+            text-decoration: none;
+            padding: .5rem .8rem;
+            border-radius: 6px;
+            font-size: .95rem;
+        }
+
+        .nav a:hover {
+            background: var(--navy-2);
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 3rem;
+        }
+
+        .page-head {
+            margin-bottom: 1.25rem;
+        }
+
+        .page-head h1 {
+            margin: 0;
+            color: var(--navy);
+            font-size: 1.75rem;
+        }
+
+        .page-head p {
+            margin: .25rem 0 0;
+            color: var(--muted);
+        }
+
+        .card {
+            max-width: 520px;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow:
+                0 1px 2px rgba(15, 42, 67, .06),
+                0 4px 16px rgba(15, 42, 67, .05);
+        }
+
+        .field {
+            margin-bottom: 1.1rem;
+        }
+
+        .field label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: .35rem;
+            font-size: .95rem;
+        }
+
+        .field input,
+        .field select,
+        .field textarea {
+            width: 100%;
+            padding: .7rem .85rem;
+            font: inherit;
+            color: var(--ink);
+            border: 1px solid #b9c4d0;
+            border-radius: 6px;
+            background: #fff;
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            border-color: var(--accent);
+            outline: 3px solid rgba(14, 124, 102, .2);
+        }
+
+        .error {
+            color: var(--danger);
+            font-size: .875rem;
+            margin: .3rem 0 0;
+        }
+
+        .form-error {
+            background: var(--danger-bg);
+            color: var(--danger);
+            border-radius: 8px;
+            padding: .75rem 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-error ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .actions {
+            display: flex;
+            gap: .75rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: .75rem 1.4rem;
+            border-radius: 6px;
+            border: 0;
+            cursor: pointer;
+            font: inherit;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .btn:hover {
+            background: var(--accent-dark);
+        }
+
+        .btn-secondary {
+            background: #fff;
+            color: var(--navy);
+            border: 1px solid #b9c4d0;
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg);
+        }
+
+        .secure {
+            max-width: 520px;
+            color: var(--muted);
+            font-size: .875rem;
+            margin: 1rem 0 0;
+        }
+
+        @media (max-width: 700px) {
+            .topbar-inner {
+                padding-top: .75rem;
+                padding-bottom: .75rem;
+            }
+
+            .nav {
+                width: 100%;
+            }
+
+            .nav a {
+                padding: .45rem .6rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="topbar">
+    <div class="topbar-inner">
+
+        <a class="brand" href="{% url 'cards' %}">
+            <span class="brand-mark">B</span>
+            Bank
+        </a>
+
+        <nav class="nav" aria-label="Main">
+            <a href="{% url 'cards' %}">Cards</a>
+            <a href="{% url 'transfer' %}">Transfer</a>
+            <a href="{% url 'transactions' %}">Transactions</a>
+            <a href="{% url 'acc_detail' user.pk %}">Account</a>
+            <a href="{% url 'logout' %}">Log out</a>
+        </nav>
+
+    </div>
+</header>
+
+<main class="container">
+
+    <div class="page-head">
+        <h1>Create account</h1>
+        <p>Fill in the details below to create your bank account.</p>
+    </div>
+
+    <div class="card">
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="form-error">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+                <div class="field">
+
+                    {{ field.label_tag }}
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+                        <p class="secure">{{ field.help_text|safe }}</p>
+                    {% endif %}
+
+                    {% for error in field.errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
+
+                </div>
+            {% endfor %}
+
+            <div class="actions">
+                <button type="submit" class="btn">
+                    Create account
+                </button>
+
+                <a href="{% url 'cards' %}" class="btn btn-secondary">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+    <p class="secure">
+        Keep your account information secure and never share your password with anyone.
+    </p>
+
+</main>
+
+</body>
+</html>

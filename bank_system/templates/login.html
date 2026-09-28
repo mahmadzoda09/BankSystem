@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in | Bank</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0f2a43;
+            --navy-2: #1a3d5f;
+            --ink: #1b2733;
+            --muted: #5c6b7a;
+            --accent: #0e7c66;
+            --accent-dark: #0a5f4e;
+            --danger: #b3261e;
+            --danger-bg: #fdecea;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            color: var(--ink);
+            line-height: 1.55;
+            background: #fff;
+        }
+        .auth { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
+        .auth-side {
+            background: var(--navy); color: #fff; padding: 3rem;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .brand { display: flex; align-items: center; gap: .6rem; color: #fff; text-decoration: none; font-weight: 600; font-size: 1.125rem; }
+        .brand-mark { width: 30px; height: 30px; border-radius: 6px; background: var(--accent); display: grid; place-items: center; font-weight: 700; }
+        .auth-side h1 { font-size: 2rem; line-height: 1.25; margin: 0 0 .75rem; max-width: 18ch; }
+        .auth-side p { color: #bccbdb; max-width: 38ch; margin: 0; }
+        .auth-main { display: flex; align-items: center; justify-content: center; padding: 2rem 1.25rem; }
+        .auth-box { width: 100%; max-width: 400px; }
+        .auth-box h2 { margin: 0 0 .25rem; color: var(--navy); font-size: 1.5rem; }
+        .sub { color: var(--muted); margin: 0 0 1.5rem; }
+        .field { margin-bottom: 1.1rem; }
+        .field label { display: block; font-weight: 500; margin-bottom: .35rem; font-size: .95rem; }
+        .field input {
+            width: 100%; padding: .7rem .85rem; font: inherit; color: var(--ink);
+            border: 1px solid #b9c4d0; border-radius: 6px; background: #fff;
+        }
+        .field input:focus { border-color: var(--accent); outline: 3px solid rgba(14, 124, 102, .2); }
+        .hint { color: var(--muted); font-size: .85rem; margin: .3rem 0 0; }
+        .error { color: var(--danger); font-size: .875rem; margin: .3rem 0 0; }
+        .form-error { background: var(--danger-bg); color: var(--danger); border-radius: 8px; padding: .75rem 1rem; margin-bottom: 1rem; }
+        .btn {
+            width: 100%; padding: .8rem 1.25rem; border: 0; border-radius: 6px; cursor: pointer;
+            background: var(--accent); color: #fff; font: inherit; font-weight: 600;
+        }
+        .btn:hover { background: var(--accent-dark); }
+        .btn:focus-visible { outline: 3px solid #7fb8ff; outline-offset: 2px; }
+        .alt { margin-top: 1.25rem; text-align: center; color: var(--muted); font-size: .95rem; }
+        .alt a { color: var(--accent-dark); }
+        @media (max-width: 800px) {
+            .auth { grid-template-columns: 1fr; }
+            .auth-side { padding: 1.5rem; }
+            .auth-side h1 { font-size: 1.4rem; }
+            .auth-side p { display: none; }
+        }
+    </style>
+</head>
+<body>
+<div class="auth">
+    <aside class="auth-side">
+        <a class="brand" href="{% url 'login' %}"><span class="brand-mark">B</span> Bank</a>
+        <div>
+            <h1>Your money, in one secure place.</h1>
+            <p>Manage accounts, cards and transfers from any device.</p>
+        </div>
+        <p>Never share your password or card PIN with anyone.</p>
+    </aside>
+
+    <main class="auth-main">
+        <div class="auth-box">
+            <h2>Log in</h2>
+            <p class="sub">Enter your details to access your account.</p>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <div class="form-error" role="alert">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                {% for field in form %}
+                <div class="field">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.help_text %}<p class="hint">{{ field.help_text|safe }}</p>{% endif %}
+                    {% for e in field.errors %}<p class="error">{{ e }}</p>{% endfor %}
+                </div>
+                {% endfor %}
+
+                <button type="submit" class="btn">Log in</button>
+            </form>
+
+            <p class="alt">New customer? <a href="{% url 'register' %}">Create an account</a></p>
+        </div>
+    </main>
+</div>
+</body>
+</html>

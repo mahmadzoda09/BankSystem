@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account | Bank</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0f2a43;
+            --navy-2: #1a3d5f;
+            --ink: #1b2733;
+            --muted: #5c6b7a;
+            --line: #dde3ea;
+            --bg: #f4f6f9;
+            --accent: #0e7c66;
+            --accent-dark: #0a5f4e;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            margin: 0; background: var(--bg); color: var(--ink); line-height: 1.55;
+            font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            font-variant-numeric: tabular-nums;
+        }
+        :focus-visible { outline: 3px solid #7fb8ff; outline-offset: 2px; }
+
+        /* Top bar */
+        .topbar { background: var(--navy); }
+        .topbar-inner {
+            max-width: 1080px; margin: 0 auto; padding: 0 1.25rem; min-height: 60px;
+            display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+        }
+        .brand { display: flex; align-items: center; gap: .6rem; color: #fff; text-decoration: none; font-weight: 600; font-size: 1.125rem; }
+        .brand-mark { width: 30px; height: 30px; border-radius: 6px; background: var(--accent); display: grid; place-items: center; font-weight: 700; }
+        .nav { display: flex; gap: .25rem; flex-wrap: wrap; align-items: center; }
+        .nav a, .logout-form button {
+            color: #d5e0ec; text-decoration: none; padding: .5rem .8rem; border-radius: 6px; font: inherit; font-size: .95rem;
+            background: none; border: 0; cursor: pointer;
+        }
+        .nav a:hover, .nav a[aria-current="page"], .logout-form button:hover { background: var(--navy-2); color: #fff; }
+        .logout-form { margin: 0; }
+
+        /* Page */
+        .container { max-width: 1080px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+        .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+        @media (max-width: 800px) { .layout { grid-template-columns: 1fr; } }
+        .panel {
+            background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 1.5rem;
+            box-shadow: 0 1px 2px rgba(15, 42, 67, .06), 0 4px 16px rgba(15, 42, 67, .05);
+        }
+        .panel h2 { margin: 0 0 1rem; color: var(--navy); font-size: 1.15rem; }
+
+        .profile { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; }
+        .avatar {
+            width: 56px; height: 56px; border-radius: 50%; background: var(--navy); color: #fff;
+            display: grid; place-items: center; font-size: 1.4rem; font-weight: 600; flex: none;
+        }
+        .profile h1 { margin: 0; color: var(--navy); font-size: 1.5rem; line-height: 1.25; }
+        .profile p { margin: 0; color: var(--muted); }
+
+        .balance-label { color: var(--muted); margin: 0; }
+        .balance { font-size: 2.5rem; font-weight: 600; color: var(--navy); margin: 0; }
+
+        .row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .8rem 0; border-top: 1px solid var(--line); }
+        .detail-list { margin: 0; }
+        .row dt { color: var(--muted); }
+        .row dd { margin: 0; font-weight: 500; text-align: right; display: flex; align-items: center; gap: .75rem; }
+        .reveal {
+            border: 1px solid #b9c4d0; background: #fff; color: var(--navy); border-radius: 6px;
+            padding: .25rem .7rem; font: inherit; font-size: .85rem; cursor: pointer;
+        }
+        .reveal:hover { background: var(--bg); }
+
+        .tiles { display: grid; gap: .75rem; }
+        .tile {
+            display: block; text-decoration: none; color: inherit; border: 1px solid var(--line); border-radius: 8px; padding: 1rem 1.1rem;
+        }
+        .tile:hover { border-color: var(--accent); }
+        .tile strong { display: block; color: var(--navy); }
+        .tile span { color: var(--muted); font-size: .92rem; }
+        .full { grid-column: 1 / -1; }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="{% url 'cards' %}"><span class="brand-mark">B</span> Bank</a>
+            <nav class="nav" aria-label="Main">
+                <a href="{% url 'cards' %}">Cards</a>
+                <a href="{% url 'transfer' %}">Transfer</a>
+                <a href="{% url 'transactions' %}">Transactions</a>
+                <a href="{% url 'acc_detail' user.pk %}" aria-current="page">Account</a>
+                <form method="post" action="{% url 'logout' %}" class="logout-form">{% csrf_token %}<button type="submit">Log out</button></form>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="layout">
+            <section class="panel">
+                <div class="profile">
+                    <div class="avatar" aria-hidden="true">{{ account.firstname|first|upper }}</div>
+                    <div>
+                        <h1>{{ account.firstname }} {{ account.lastname }}</h1>
+                        <p>{{ account.user.phone }}</p>
+                    </div>
+                </div>
+                <p class="balance-label">Account balance</p>
+                <p class="balance">{{ account.balance }}</p>
+            </section>
+
+            <section class="panel">
+                <h2>Personal details</h2>
+                <dl class="detail-list">
+                    <div class="row"><dt>Full name</dt><dd>{{ account.firstname }} {{ account.lastname }}</dd></div>
+                    <div class="row"><dt>Phone</dt><dd>{{ account.user.phone }}</dd></div>
+                    <div class="row"><dt>Address</dt><dd>{{ account.address }}</dd></div>
+                    <div class="row">
+                        <dt>Passport ID</dt>
+                        <dd>
+                            <span class="secret" data-value="{{ account.passport_id }}">••••••••</span>
+                            <button type="button" class="reveal" aria-pressed="false">Show</button>
+                        </dd>
+                    </div>
+                </dl>
+            </section>
+
+            <section class="panel full">
+                <h2>Quick actions</h2>
+                <div class="tiles" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                    <a class="tile" href="{% url 'cards' %}"><strong>My cards</strong><span>View and manage your cards.</span></a>
+                    <a class="tile" href="{% url 'transfer' %}"><strong>Transfer</strong><span>Send money to another customer.</span></a>
+                    <a class="tile" href="{% url 'transactions' %}"><strong>Transactions</strong><span>See your full history.</span></a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        document.querySelectorAll('.reveal').forEach(function (btn) {
+            var secret = btn.previousElementSibling;
+            var hidden = secret.textContent;
+            btn.addEventListener('click', function () {
+                var showing = btn.getAttribute('aria-pressed') === 'true';
+                secret.textContent = showing ? hidden : secret.dataset.value;
+                btn.setAttribute('aria-pressed', showing ? 'false' : 'true');
+                btn.textContent = showing ? 'Show' : 'Hide';
+            });
+        });
+    </script>
+</body>
+</html>

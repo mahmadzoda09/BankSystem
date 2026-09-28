@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card details | Bank</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0f2a43;
+            --navy-2: #1a3d5f;
+            --ink: #1b2733;
+            --muted: #5c6b7a;
+            --line: #dde3ea;
+            --bg: #f4f6f9;
+            --accent: #0e7c66;
+            --accent-dark: #0a5f4e;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            margin: 0; background: var(--bg); color: var(--ink); line-height: 1.55;
+            font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            font-variant-numeric: tabular-nums;
+        }
+        :focus-visible { outline: 3px solid #7fb8ff; outline-offset: 2px; }
+
+        /* Top bar */
+        .topbar { background: var(--navy); }
+        .topbar-inner {
+            max-width: 1080px; margin: 0 auto; padding: 0 1.25rem; min-height: 60px;
+            display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+        }
+        .brand { display: flex; align-items: center; gap: .6rem; color: #fff; text-decoration: none; font-weight: 600; font-size: 1.125rem; }
+        .brand-mark { width: 30px; height: 30px; border-radius: 6px; background: var(--accent); display: grid; place-items: center; font-weight: 700; }
+        .nav { display: flex; gap: .25rem; flex-wrap: wrap; }
+        .nav a { color: #d5e0ec; text-decoration: none; padding: .5rem .8rem; border-radius: 6px; font-size: .95rem; }
+        .nav a:hover, .nav a[aria-current="page"] { background: var(--navy-2); color: #fff; }
+
+        /* Page */
+        .container { max-width: 1080px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+        .page-head { margin-bottom: 1.5rem; }
+        .page-head h1 { margin: 0; color: var(--navy); font-size: 1.75rem; }
+        .page-head p { margin: .25rem 0 0; color: var(--muted); }
+        .layout { display: grid; grid-template-columns: minmax(280px, 380px) 1fr; gap: 1.5rem; align-items: start; }
+        @media (max-width: 800px) { .layout { grid-template-columns: 1fr; } }
+
+        /* Card visual */
+        .bank-card {
+            aspect-ratio: 1.586; border-radius: 14px; padding: 1.4rem; color: #fff;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+            display: flex; flex-direction: column; justify-content: space-between;
+            box-shadow: 0 1px 2px rgba(15, 42, 67, .1), 0 6px 20px rgba(15, 42, 67, .12);
+        }
+        .chip { width: 38px; height: 28px; border-radius: 5px; background: #d9b86a; opacity: .9; }
+        .number { font-size: 1.3rem; letter-spacing: .12em; }
+        .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; }
+        .card-bottom small { display: block; color: #a9bbcd; font-size: .75rem; }
+        .holder { font-weight: 500; }
+
+        /* Detail panel */
+        .panel {
+            background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 1.5rem;
+            box-shadow: 0 1px 2px rgba(15, 42, 67, .06), 0 4px 16px rgba(15, 42, 67, .05);
+        }
+        .balance-label { color: var(--muted); margin: 0; }
+        .balance { font-size: 2.25rem; font-weight: 600; color: var(--navy); margin: 0 0 1.25rem; }
+        .detail-list { margin: 0; }
+        .row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .8rem 0; border-top: 1px solid var(--line); }
+        .row dt { color: var(--muted); }
+        .row dd { margin: 0; font-weight: 500; display: flex; align-items: center; gap: .75rem; }
+        .reveal {
+            border: 1px solid #b9c4d0; background: #fff; color: var(--navy); border-radius: 6px;
+            padding: .25rem .7rem; font: inherit; font-size: .85rem; cursor: pointer;
+        }
+        .reveal:hover { background: var(--bg); }
+
+        .actions { margin-top: 1.5rem; }
+        .btn {
+            display: inline-block; padding: .7rem 1.2rem; border-radius: 6px; font-weight: 600; text-decoration: none;
+            background: #fff; color: var(--navy); border: 1px solid #b9c4d0;
+        }
+        .btn:hover { background: var(--bg); }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="{% url 'cards' %}"><span class="brand-mark">B</span> Bank</a>
+            <nav class="nav" aria-label="Main">
+                <a href="{% url 'cards' %}" aria-current="page">Cards</a>
+                <a href="{% url 'transfer' %}">Transfer</a>
+                <a href="{% url 'transactions' %}">Transactions</a>
+                <a href="{% url 'acc_detail' user.pk %}">Account</a>
+                <a href="{% url 'logout' %}">Log out</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="page-head">
+            <h1>Card details</h1>
+            <p>Card ending {{ card.card_number|slice:"-4:" }}</p>
+        </div>
+
+        <div class="layout">
+            <div class="bank-card" aria-label="Card preview">
+                <span class="chip" aria-hidden="true"></span>
+                <div class="number">{{ card.card_number }}</div>
+                <div class="card-bottom">
+                    <div>
+                        <small>Card holder</small>
+                        <span class="holder">{{ card.owner.firstname }}</span>
+                    </div>
+                    <div>
+                        <small>Expires</small>
+                        <span class="holder">{{ card.date }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <section class="panel">
+                <p class="balance-label">Balance</p>
+                <p class="balance">{{ card.balance }}</p>
+
+                <dl class="detail-list">
+                    <div class="row"><dt>Card number</dt><dd>{{ card.card_number }}</dd></div>
+                    <div class="row"><dt>Card holder</dt><dd>{{ card.owner.firstname }}</dd></div>
+                    <div class="row"><dt>Expiry date</dt><dd>{{ card.date }}</dd></div>
+                    <div class="row">
+                        <dt>CVV</dt>
+                        <dd>
+                            <span class="secret" data-value="{{ card.cvv }}">•••</span>
+                            <button type="button" class="reveal" aria-pressed="false">Show</button>
+                        </dd>
+                    </div>
+                    <div class="row">
+                        <dt>PIN</dt>
+                        <dd>
+                            <span class="secret" data-value="{{ card.pin }}">••••</span>
+                            <button type="button" class="reveal" aria-pressed="false">Show</button>
+                        </dd>
+                    </div>
+                </dl>
+
+                <div class="actions">
+                    <a class="btn" href="{% url 'cards' %}">Back to cards</a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        document.querySelectorAll('.reveal').forEach(function (btn) {
+            var secret = btn.previousElementSibling;
+            var hidden = secret.textContent;
+            btn.addEventListener('click', function () {
+                var showing = btn.getAttribute('aria-pressed') === 'true';
+                secret.textContent = showing ? hidden : secret.dataset.value;
+                btn.setAttribute('aria-pressed', showing ? 'false' : 'true');
+                btn.textContent = showing ? 'Show' : 'Hide';
+            });
+        });
+    </script>
+</body>
+</html>

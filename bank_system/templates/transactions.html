@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions | Bank</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0f2a43;
+            --navy-2: #1a3d5f;
+            --ink: #1b2733;
+            --muted: #5c6b7a;
+            --line: #dde3ea;
+            --bg: #f4f6f9;
+            --accent: #0e7c66;
+            --accent-dark: #0a5f4e;
+            --danger: #b3261e;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            margin: 0; background: var(--bg); color: var(--ink); line-height: 1.55;
+            font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            font-variant-numeric: tabular-nums;
+        }
+        :focus-visible { outline: 3px solid #7fb8ff; outline-offset: 2px; }
+
+        /* Top bar */
+        .topbar { background: var(--navy); }
+        .topbar-inner {
+            max-width: 1080px; margin: 0 auto; padding: 0 1.25rem; min-height: 60px;
+            display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+        }
+        .brand { display: flex; align-items: center; gap: .6rem; color: #fff; text-decoration: none; font-weight: 600; font-size: 1.125rem; }
+        .brand-mark { width: 30px; height: 30px; border-radius: 6px; background: var(--accent); display: grid; place-items: center; font-weight: 700; }
+        .nav { display: flex; gap: .25rem; flex-wrap: wrap; }
+        .nav a { color: #d5e0ec; text-decoration: none; padding: .5rem .8rem; border-radius: 6px; font-size: .95rem; }
+        .nav a:hover, .nav a[aria-current="page"] { background: var(--navy-2); color: #fff; }
+
+        /* Page */
+        .container { max-width: 1080px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+        .page-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+        .page-head h1 { margin: 0; color: var(--navy); font-size: 1.75rem; }
+        .page-head p { margin: .25rem 0 0; color: var(--muted); }
+        .btn {
+            display: inline-block; padding: .7rem 1.2rem; border-radius: 6px; font-weight: 600; text-decoration: none;
+            background: var(--accent); color: #fff;
+        }
+        .btn:hover { background: var(--accent-dark); }
+
+        /* Filters */
+        .filters { display: inline-flex; border: 1px solid #b9c4d0; border-radius: 6px; overflow: hidden; background: #fff; margin-bottom: 1rem; }
+        .filters a { padding: .55rem 1.1rem; text-decoration: none; color: var(--navy); font-size: .95rem; border-right: 1px solid #b9c4d0; }
+        .filters a:last-child { border-right: 0; }
+        .filters a:hover { background: var(--bg); }
+        .filters a[aria-current="true"] { background: var(--navy); color: #fff; }
+
+        /* Table */
+        .panel { background: #fff; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 1px 2px rgba(15, 42, 67, .06), 0 4px 16px rgba(15, 42, 67, .05); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: .9rem 1rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+        th { background: #f8fafc; color: var(--muted); font-weight: 600; font-size: .875rem; }
+        tbody tr:last-child td { border-bottom: 0; }
+        td.num, th.num { text-align: right; white-space: nowrap; }
+        .date { color: var(--muted); font-size: .9rem; white-space: nowrap; }
+        .party { display: block; font-weight: 500; }
+        .sub { display: block; color: var(--muted); font-size: .875rem; }
+        .amount { font-weight: 600; }
+        .amount.in { color: var(--accent-dark); }
+        .amount.out { color: var(--danger); }
+        .empty { text-align: center; color: var(--muted); padding: 3rem 1rem; }
+        .empty p { margin: 0 0 1rem; }
+
+        /* Mobile: each row becomes a stacked block */
+        @media (max-width: 720px) {
+            table, thead, tbody, tr, td { display: block; }
+            thead { position: absolute; left: -9999px; }
+            tr { padding: .9rem 1rem; border-bottom: 1px solid var(--line); }
+            tbody tr:last-child { border-bottom: 0; }
+            td { border: 0; padding: .2rem 0; }
+            td[data-label]::before { content: attr(data-label) ": "; color: var(--muted); font-size: .85rem; }
+            td.num { text-align: left; font-size: 1.15rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="{% url 'cards' %}"><span class="brand-mark">B</span> Bank</a>
+            <nav class="nav" aria-label="Main">
+                <a href="{% url 'cards' %}">Cards</a>
+                <a href="{% url 'transfer' %}">Transfer</a>
+                <a href="{% url 'transactions' %}" aria-current="page">Transactions</a>
+                <a href="{% url 'acc_detail' user.pk %}">Account</a>
+                <a href="{% url 'logout' %}">Log out</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="page-head">
+            <div>
+                <h1>Transaction history</h1>
+                <p>Money you sent and received.</p>
+            </div>
+            <a class="btn" href="{% url 'transfer' %}">Send money</a>
+        </div>
+
+        <nav class="filters" aria-label="Filter transactions">
+            <a href="?type=all" {% if request.GET.type != 'sent' and request.GET.type != 'received' %}aria-current="true"{% endif %}>All</a>
+            <a href="?type=sent" {% if request.GET.type == 'sent' %}aria-current="true"{% endif %}>Sent</a>
+            <a href="?type=received" {% if request.GET.type == 'received' %}aria-current="true"{% endif %}>Received</a>
+        </nav>
+
+        <div class="panel">
+            {% if transactions %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th class="num">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for transaction in transactions %}
+                    <tr>
+                        <td class="date" data-label="Date">{{ transaction.created_at }}</td>
+
+                        <td data-label="From">
+                            {% if transaction.source_account %}
+                                <span class="party">{{ transaction.source_account.firstname }} {{ transaction.source_account.lastname }}</span>
+                                <span class="sub">{{ transaction.source_account.user.phone }}</span>
+                            {% endif %}
+                            {% if transaction.source_card %}
+                                <span class="sub">Card {{ transaction.source_card.card_number }}</span>
+                            {% endif %}
+                        </td>
+
+                        <td data-label="To">
+                            {% if transaction.destination_account %}
+                                <span class="party">{{ transaction.destination_account.firstname }} {{ transaction.destination_account.lastname }}</span>
+                                <span class="sub">{{ transaction.destination_account.user.phone }}</span>
+                            {% endif %}
+                            {% if transaction.destination_card %}
+                                <span class="sub">Card {{ transaction.destination_card.card_number }}</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="num">
+                            {% if transaction.source_account.user == user or transaction.source_card.owner.user == user %}
+                                <span class="amount out">&minus;{{ transaction.amount }}</span>
+                            {% else %}
+                                <span class="amount in">+{{ transaction.amount }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty">
+                <p>No transactions yet.</p>
+                <a class="btn" href="{% url 'transfer' %}">Make your first transfer</a>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>
